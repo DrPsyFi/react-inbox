@@ -32,6 +32,41 @@ class App extends Component {
   setSelectedMessagesToRead= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true} : {...message} )})
   }
+  setSelectedMessagesToUnread= () => {
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
+  }
+  handleAddLabel= (event) => {
+    let newLabel = event.target.value
+    const messages = this.state.data;
+
+    messages.forEach(message => {
+      if (message.selected) {
+        var newLabelInLabels = message.labels.find(function(label) {
+          return label === newLabel
+        })
+
+        if(!newLabelInLabels){
+          message.labels.push(newLabel)
+        }
+      }
+    })
+    this.setState({ data: messages });
+  }
+  handleRemoveLabel= (event) => {
+    let selectedLabel = event.target.value
+    const messages = this.state.data
+
+    messages.forEach(message => {
+      if(message.selected){
+        // remove selectedLabel from message.labels
+        let result = message.labels.filter(label => label !== selectedLabel)
+        console.log(result)
+        message.labels = result
+      }
+      this.setState({ data: messages });
+
+  })
+}
   render() {
 
     let unReadCount = 0;
@@ -40,7 +75,7 @@ class App extends Component {
        if(!data[i].read) {
          unReadCount+= 1
        }
-       console.log(unReadCount)
+
      }
 
 
@@ -52,6 +87,9 @@ class App extends Component {
            noneChecked={this.state.data.reduce((acc, ele) => acc && !ele.selected, true)}
            unReadCount={unReadCount}
            setSelectedMessagesToRead={this.setSelectedMessagesToRead}
+           setSelectedMessagesToUnread={this.setSelectedMessagesToUnread}
+           handleAddLabel={this.handleAddLabel}
+           handleRemoveLabel={this.handleRemoveLabel}
         />
         <Messages messages={this.state.data}
            toggleStar={this.toggleStar}
