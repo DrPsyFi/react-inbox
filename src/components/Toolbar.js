@@ -6,7 +6,7 @@ import React from "react"
 ///Below is an example of destructuring props
 
 const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelectedMessagesToUnread, unReadCount,
-  handleAddLabel, handleRemoveLabel}) => {
+  handleAddLabel, handleRemoveLabel, toggleForm}) => {
   let checkClass
 
     if (allChecked) {
@@ -27,6 +27,14 @@ const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelected
           <span className="badge badge">{unReadCount}</span>
           unread messages
         </p>
+
+        <button className="btn btn-danger"
+          onClick={toggleForm}
+        >
+          <i className="fa fa-plus"></i>
+
+
+        </button>
 
         <button className="btn btn-default">
           <i className={`fa ${checkClass}`}></i>
