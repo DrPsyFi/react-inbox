@@ -1,32 +1,33 @@
 import React, {Component} from 'react';
 import Toolbar from './components/Toolbar.js'
 import Messages from './components/Messages.js'
+import ComposeForm from './components/ComposeForm'
 import './App.css';
-import data from './data.js'
-
-data.forEach(message => {
-  if (message.selected) {
-
-  }
-  else {
-    message.selected = false;
-  }
-})
 
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {  /// Setting state
-      data
+      data: [],
+      showForm: false
     }
   }
+<<<<<<< HEAD
 
+=======
+  async componentDidMount() {
+    const response = await fetch('http://localhost:8082/api/messages')
+    const json = await response.json()
+    this.setState({data: json})
+  }
+>>>>>>> need to fix post method
   toggleStar = (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
 
   }
+
   toggleCheck= (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
@@ -68,10 +69,12 @@ class App extends Component {
 
 
   }
+
   setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
 
   }
+
   handleAddLabel= (event) => {
     let newLabel = event.target.value
     const messages = this.state.data;
@@ -91,7 +94,8 @@ class App extends Component {
     })
     this.setState({ data: messages })
   }
-  handleRemoveLabel= (event) => {
+
+  handleRemoveLabel = (event) => {
     let selectedLabel = event.target.value
     const messages = this.state.data
 
@@ -102,6 +106,7 @@ class App extends Component {
         message.labels = result
         message.selected = false
       }
+<<<<<<< HEAD
       this.setState({ data: messages });
   })
 }
@@ -113,6 +118,39 @@ class App extends Component {
     this.setState({data: result})
 
   }
+=======
+    this.setState({ data: messages });
+  })
+  }
+
+  toggleForm = () => {
+
+    this.setState({showForm: !this.state.showForm })
+    //
+  }
+////
+////// Do I need a newLifecycle method?  I was told that I did not
+
+  handleNewMessage = (e) => {
+    e.preventDefault
+    async createMessage =>  {
+       console.log("YESAAAAAAA")
+       let subject = e.target.subject.value
+       let body = e.target.subject.value
+       let newMessage = { subject, body }
+      const response = await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify(newMessage),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+      await response.json()
+      this.setState(newMessage)
+   }
+ }
+>>>>>>> need to fix post method
 
   render() {
 
@@ -126,7 +164,10 @@ class App extends Component {
      }
 
 
-    return (<div className="App">
+    return (
+
+      <div className="App">
+
       <div className="container">
 
         <Toolbar
@@ -140,6 +181,7 @@ class App extends Component {
            handleRemoveMessage={this.handleRemoveMessage}
            toggleAll={this.toggleAll}
         />
+        {this.state.showForm ? <ComposeForm handleNewMessage={this.handleNewMessage}/> : null}
         <Messages messages={this.state.data}
            toggleStar={this.toggleStar}
            toggleCheck={this.toggleCheck}
