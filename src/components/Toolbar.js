@@ -28,6 +28,14 @@ const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelected
           unread messages
         </p>
 
+        <button className="btn btn-danger"
+          onClick={toggleForm}
+        >
+          <i className="fa fa-plus"></i>
+
+
+        </button>
+
         <button className="btn btn-default">
           <i className={`fa ${checkClass}`}></i>
         </button>

@@ -1,41 +1,84 @@
 import React, {Component} from 'react';
 import Toolbar from './components/Toolbar.js'
 import Messages from './components/Messages.js'
+import ComposeForm from './components/ComposeForm'
 import './App.css';
-import data from './data.js'
-
-data.forEach(message => {
-  if (message.selected) {
-
-  }
-  else {
-    message.selected = false;
-  }
-})
 
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {  /// Setting state
-      data
+      data: [],
+      showForm: false
     }
   }
+  async componentDidMount() {
+    const response = await fetch('http://localhost:8082/api/messages')
+    const json = await response.json()
+    this.setState({data: json})
+  }
+
   toggleStar = (id) => {
 
+    const newStarValue = !(this.state.data.find(message => message.id === id).starred)
+
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
+
+    const updateStar = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: [id],
+          command: "star",
+          star: newStarValue
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+
+    updateStar()
+
   }
+
   toggleCheck= (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
-    console.log(this.state.data);
   }
+
   setSelectedMessagesToRead= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true} : {...message} )})
   }
+
   setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
+
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
+    console.log(selectedIds)
+
+    const update2Unread = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: selectedIds,
+          command: "read",
+          read: false
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+    update2Unread()
   }
+
   handleAddLabel= (event) => {
     let newLabel = event.target.value
     const messages = this.state.data;
@@ -53,7 +96,8 @@ class App extends Component {
     })
     this.setState({ data: messages });
   }
-  handleRemoveLabel= (event) => {
+
+  handleRemoveLabel = (event) => {
     let selectedLabel = event.target.value
     const messages = this.state.data
 
@@ -64,18 +108,46 @@ class App extends Component {
         console.log(result)
         message.labels = result
       }
-      this.setState({ data: messages });
+    this.setState({ data: messages });
   })
-}
-  handleRemoveMessage= () => {
-
-    const messages = this.state.data
-    const result = messages.filter(message => message.selected === false);
-
-    this.setState({data: result})
-
-
   }
+
+  toggleForm = () => {
+
+    this.setState({showForm: !this.state.showForm })
+    //
+  }
+////
+////// Do I need a newLifecycle method?  I was told that I did not
+
+  handleNewMessage = (e) => {
+    e.preventDefault()
+    const createMessage = async () =>  {
+
+       let subject = e.target.subject.value
+       let body = e.target.body.value
+       let newMessage = { subject, body }
+      const response = await fetch('http://localhost:8082/api/messages', {
+        method: 'POST',
+        body: JSON.stringify(newMessage),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+      const message = await response.json()
+
+
+      this.setState({ data: [...this.state.data, message] })
+
+
+      // const person = await response.json()
+      //     this.setState({people: [...this.state.people, person]})
+
+   }
+
+   createMessage()
+ }
 
   render() {
 
@@ -89,7 +161,10 @@ class App extends Component {
      }
 
 
-    return (<div className="App">
+    return (
+
+      <div className="App">
+
       <div className="container">
 
         <Toolbar
@@ -100,8 +175,9 @@ class App extends Component {
            setSelectedMessagesToUnread={this.setSelectedMessagesToUnread}
            handleAddLabel={this.handleAddLabel}
            handleRemoveLabel={this.handleRemoveLabel}
-           handleRemoveMessage={this.handleRemoveMessage}
+           toggleForm={this.toggleForm}
         />
+        {this.state.showForm ? <ComposeForm handleNewMessage={this.handleNewMessage}/> : null}
         <Messages messages={this.state.data}
            toggleStar={this.toggleStar}
            toggleCheck={this.toggleCheck}
