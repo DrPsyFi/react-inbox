@@ -19,6 +19,13 @@ class App extends Component {
     this.setState({data: json})
   }
 
+=======
+  async componentDidMount() {
+    const response = await fetch('http://localhost:8082/api/messages')
+    const json = await response.json()
+    this.setState({data: json})
+  }
+>>>>>>> need to fix post method
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
@@ -88,6 +95,9 @@ class App extends Component {
   }
 
   setSelectedMessagesToUnread= () => {
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
+
+  setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
 
     const selectedMessages = this.state.data.filter(message=> message.selected);
@@ -143,7 +153,8 @@ class App extends Component {
         message.labels = result
         message.selected = false
       }
-    this.setState({ data: messages });
+<<<<<<< HEAD
+      this.setState({ data: messages });
   })
   }
 
@@ -152,45 +163,39 @@ class App extends Component {
     this.setState({showForm: !this.state.showForm })
 
   }
-  handleRemoveMessage= () => {
+=======
+    this.setState({ data: messages });
+  })
+  }
 
-     const messages = this.state.data
-     const result = messages.filter(message => message.selected === false);
+  toggleForm = () => {
 
-     this.setState({data: result})
-
-
-   }
-
+    this.setState({showForm: !this.state.showForm })
+    //
+  }
+////
+////// Do I need a newLifecycle method?  I was told that I did not
 
   handleNewMessage = (e) => {
-    e.preventDefault()
-    const createMessage = async () =>  {
+    e.preventDefault
+    async createMessage =>  {
        console.log("YESAAAAAAA")
        let subject = e.target.subject.value
-       let body = e.target.body.value
+       let body = e.target.subject.value
        let newMessage = { subject, body }
       const response = await fetch('http://localhost:8082/api/messages', {
-        method: 'POST',
+        method: 'PATCH',
         body: JSON.stringify(newMessage),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
       })
-      const message = await response.json()
-
-
-      this.setState({ data: [...this.state.data, message] })
-
-
-      // const person = await response.json()
-      //     this.setState({people: [...this.state.people, person]})
-
+      await response.json()
+      this.setState(newMessage)
    }
-
-   createMessage()
  }
+>>>>>>> need to fix post method
 
   render() {
 
