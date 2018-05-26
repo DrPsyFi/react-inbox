@@ -18,10 +18,10 @@ class App extends Component {
     const json = await response.json()
     this.setState({data: json})
   }
-<<<<<<< HEAD
+
 =======
 
->>>>>>> almost done
+>>>>>>> need to fix post method
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
@@ -51,37 +51,6 @@ class App extends Component {
   toggleCheck= (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
-
-  }
-
-
-  toggleAll = () => {
-    const messages = this.state.data;
-    let newState
-    let someSelected = messages.some(message => message.selected === true)
-    let everySelected = messages.every(message => message.selected === true)
-
-      if (everySelected)  {
-          newState = messages.map(message => {
-            message.selected = false
-            return message
-          })
-      }
-      else if(!someSelected) {
-        console.log(someSelected)
-        newState = messages.map(message => {
-          message.selected = true
-          return message
-        })
-      }
-      else {
-        newState = messages.map(message => {
-          message.selected = true
-          return message
-        })
-      }
-       this.setState({data: newState})
-
   }
 
   setSelectedMessagesToRead= () => {
@@ -161,7 +130,7 @@ class App extends Component {
   handleNewMessage = (e) => {
     e.preventDefault()
     const createMessage = async () =>  {
-       console.log("YESAAAAAAA")
+
        let subject = e.target.subject.value
        let body = e.target.body.value
        let newMessage = { subject, body }
@@ -213,8 +182,7 @@ class App extends Component {
            setSelectedMessagesToUnread={this.setSelectedMessagesToUnread}
            handleAddLabel={this.handleAddLabel}
            handleRemoveLabel={this.handleRemoveLabel}
-           handleRemoveMessage={this.handleRemoveMessage}
-           toggleAll={this.toggleAll}
+           toggleForm={this.toggleForm}
         />
         {this.state.showForm ? <ComposeForm handleNewMessage={this.handleNewMessage}/> : null}
         <Messages messages={this.state.data}
