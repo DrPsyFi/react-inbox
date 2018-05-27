@@ -132,23 +132,32 @@ class App extends Component {
 ////// Do I need a newLifecycle method?  I was told that I did not
 
   handleNewMessage = (e) => {
-    e.preventDefault
-    async createMessage =>  {
+    e.preventDefault()
+    const createMessage = async () =>  {
        console.log("YESAAAAAAA")
        let subject = e.target.subject.value
-       let body = e.target.subject.value
+       let body = e.target.body.value
        let newMessage = { subject, body }
       const response = await fetch('http://localhost:8082/api/messages', {
-        method: 'PATCH',
+        method: 'POST',
         body: JSON.stringify(newMessage),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
       })
-      await response.json()
-      this.setState(newMessage)
+      const message = await response.json()
+
+
+      this.setState({ data: [...this.state.data, message] })
+
+
+      // const person = await response.json()
+      //     this.setState({people: [...this.state.people, person]})
+
    }
+
+   createMessage()
  }
 >>>>>>> need to fix post method
 
