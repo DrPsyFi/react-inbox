@@ -18,9 +18,31 @@ class App extends Component {
     const json = await response.json()
     this.setState({data: json})
   }
+
   toggleStar = (id) => {
 
+    const newStarValue = !(this.state.data.find(message => message.id === id).starred)
+
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
+
+    const updateStar = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: [id],
+          command: "star",
+          star: newStarValue
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+
+    updateStar()
+
   }
 
   toggleCheck= (id) => {
@@ -34,6 +56,27 @@ class App extends Component {
 
   setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
+
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
+    console.log(selectedIds)
+
+    const update2Unread = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: selectedIds,
+          command: "read",
+          read: false
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+    update2Unread()
   }
 
   handleAddLabel= (event) => {
