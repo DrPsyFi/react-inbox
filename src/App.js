@@ -28,6 +28,7 @@ class App extends Component {
   toggleCheck= (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
+    console.log(this.state.data);
   }
   setSelectedMessagesToRead= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true} : {...message} )})
@@ -64,9 +65,18 @@ class App extends Component {
         message.labels = result
       }
       this.setState({ data: messages });
-
   })
 }
+  handleRemoveMessage= () => {
+
+    const messages = this.state.data
+    const result = messages.filter(message => message.selected === false);
+
+    this.setState({data: result})
+
+
+  }
+
   render() {
 
     let unReadCount = 0;
@@ -90,6 +100,7 @@ class App extends Component {
            setSelectedMessagesToUnread={this.setSelectedMessagesToUnread}
            handleAddLabel={this.handleAddLabel}
            handleRemoveLabel={this.handleRemoveLabel}
+           handleRemoveMessage={this.handleRemoveMessage}
         />
         <Messages messages={this.state.data}
            toggleStar={this.toggleStar}

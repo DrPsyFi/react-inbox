@@ -6,6 +6,7 @@ import React from "react"
 const Message = (props) => {
   const message = props.message;
 
+
   function handleStarClick(e) {
 
     props.toggleStar(message.id);
@@ -21,7 +22,7 @@ const Message = (props) => {
       <div className="col-xs-1">
         <div className="row">
           <div className="col-xs-2">
-            <input type="checkbox" checked = {message.selected} onChange={handleCheckClick}/>
+            <input type="checkbox" checked = {message.selected} onChange={handleCheckClick} />
           </div>
           <div className="col-xs-2">
             <i className={`star fa ${message.starred ? "fa-star" : "fa-star-o"}` } onClick={handleStarClick}></i>
@@ -33,8 +34,6 @@ const Message = (props) => {
         {message.labels.map((label, idx) =>
           <span key={idx} className="label label-warning"> {label} </span>
         )}
-
-
 
         <a href="#">
           {message.subject}
