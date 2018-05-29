@@ -13,18 +13,38 @@ class App extends Component {
       showForm: false
     }
   }
-<<<<<<< HEAD
-
-=======
   async componentDidMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
     this.setState({data: json})
   }
->>>>>>> need to fix post method
+<<<<<<< HEAD
+=======
+
+>>>>>>> almost done
   toggleStar = (id) => {
 
+    const newStarValue = !(this.state.data.find(message => message.id === id).starred)
+
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
+
+    const updateStar = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: [id],
+          command: "star",
+          star: newStarValue
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+
+    updateStar()
 
   }
 
@@ -71,8 +91,28 @@ class App extends Component {
   }
 
   setSelectedMessagesToUnread= () => {
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
 
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
+    console.log(selectedIds)
+
+    const update2Unread = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: selectedIds,
+          command: "read",
+          read: false
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+    update2Unread()
   }
 
   handleAddLabel= (event) => {
@@ -106,19 +146,6 @@ class App extends Component {
         message.labels = result
         message.selected = false
       }
-<<<<<<< HEAD
-      this.setState({ data: messages });
-  })
-}
-  handleRemoveMessage= () => {
-
-    const messages = this.state.data
-    const result = messages.filter(message => message.selected === false);
-
-    this.setState({data: result})
-
-  }
-=======
     this.setState({ data: messages });
   })
   }
@@ -159,7 +186,6 @@ class App extends Component {
 
    createMessage()
  }
->>>>>>> need to fix post method
 
   render() {
 
