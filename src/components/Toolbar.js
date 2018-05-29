@@ -5,7 +5,7 @@ import React from "react"
 ////const Toolbar = (props) =>
 ///Below is an example of destructuring props
 
-const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelectedMessagesToUnread, unReadCount,
+const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelectedMessagesToUnread, unReadCount,toggleForm,
   handleAddLabel, handleRemoveLabel, handleRemoveMessage}) => {
   let checkClass
 
