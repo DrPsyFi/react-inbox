@@ -150,10 +150,18 @@ class App extends Component {
   toggleForm = () => {
 
     this.setState({showForm: !this.state.showForm })
-    //
+
   }
-////
-////// Do I need a newLifecycle method?  I was told that I did not
+  handleRemoveMessage= () => {
+
+     const messages = this.state.data
+     const result = messages.filter(message => message.selected === false);
+
+     this.setState({data: result})
+
+
+   }
+
 
   handleNewMessage = (e) => {
     e.preventDefault()
