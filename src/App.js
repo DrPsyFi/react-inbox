@@ -13,19 +13,13 @@ class App extends Component {
       showForm: false
     }
   }
-  async componentDidMount() {
-    const response = await fetch('http://localhost:8082/api/messages')
-    const json = await response.json()
-    this.setState({data: json})
-  }
-
 =======
   async componentDidMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
     this.setState({data: json})
   }
->>>>>>> need to fix post method
+
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
@@ -95,9 +89,6 @@ class App extends Component {
   }
 
   setSelectedMessagesToUnread= () => {
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
-
-  setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
 
     const selectedMessages = this.state.data.filter(message=> message.selected);
@@ -153,16 +144,6 @@ class App extends Component {
         message.labels = result
         message.selected = false
       }
-<<<<<<< HEAD
-      this.setState({ data: messages });
-  })
-  }
-
-  toggleForm = () => {
-
-    this.setState({showForm: !this.state.showForm })
-
-  }
 =======
     this.setState({ data: messages });
   })
@@ -204,7 +185,6 @@ class App extends Component {
 
    createMessage()
  }
->>>>>>> need to fix post method
 
   render() {
 
