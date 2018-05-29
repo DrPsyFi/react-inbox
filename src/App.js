@@ -25,8 +25,6 @@ class App extends Component {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
 
-<<<<<<< HEAD
-=======
     const updateStar = async () =>  {
       await fetch('http://localhost:8082/api/messages', {
         method: 'PATCH',
@@ -45,7 +43,6 @@ class App extends Component {
 
     updateStar()
 
->>>>>>> almost done
   }
 
   toggleCheck= (id) => {
@@ -91,10 +88,6 @@ class App extends Component {
   }
 
   setSelectedMessagesToUnread= () => {
-<<<<<<< HEAD
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
-
-=======
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
 
     const selectedMessages = this.state.data.filter(message=> message.selected);
@@ -117,7 +110,6 @@ class App extends Component {
       })
     }
     update2Unread()
->>>>>>> almost done
   }
 
   handleAddLabel= (event) => {
