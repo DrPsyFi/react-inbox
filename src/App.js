@@ -87,7 +87,7 @@ class App extends Component {
         }
         message.selected = false
       }
-      return message
+        return message
     })
     this.setState({ data: newMessages })
   }
@@ -95,14 +95,15 @@ class App extends Component {
     let selectedLabel = event.target.value
     const messages = this.state.data
 
-    messages.map(message => {
+    const newMessages= Messages.map(message => {
       if(message.selected){
         // remove selectedLabel from message.labels
         let result = message.labels.filter(label => label !== selectedLabel)
         message.labels = result
         message.selected = false
+        return messages
       }
-      this.setState({ data: messages });
+      this.setState({ data: newMessages });
   })
 }
   handleRemoveMessage= () => {
