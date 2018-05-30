@@ -29,7 +29,7 @@ class App extends Component {
     this.setState({data: json})
 
   }
-console.log(data)
+
 
   toggleStar = (id) => {
 
