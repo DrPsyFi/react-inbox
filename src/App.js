@@ -13,7 +13,6 @@ class App extends Component {
       showForm: false
     }
   }
-=======
   async componentDidMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
@@ -22,7 +21,9 @@ class App extends Component {
 
 =======
 
->>>>>>> need to fix post method
+=======
+>>>>>>> f7674170786ae369e33db4dc3fdefe31fe91330d
+>>>>>>> 1604fd71c202d7388565dd1e376935e22e8010ed
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
@@ -116,7 +117,6 @@ class App extends Component {
         message.labels = result
         message.selected = false
       }
-=======
     this.setState({ data: messages });
   })
   }
