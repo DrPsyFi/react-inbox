@@ -5,25 +5,32 @@ import ComposeForm from './components/ComposeForm'
 import './App.css';
 
 
+
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {  /// Setting state
+    this.state = {  /// Setting
       data: [],
       showForm: false
     }
+
+    // data.map(message => {
+    //   if (message.selected) {
+    //
+    //   }
+    //   else {
+    //     message.selected = false;
+    //   }
+    // })
   }
   async componentDidMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
     this.setState({data: json})
+
   }
+console.log(data)
 
-=======
-
-=======
->>>>>>> f7674170786ae369e33db4dc3fdefe31fe91330d
->>>>>>> 1604fd71c202d7388565dd1e376935e22e8010ed
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
@@ -55,6 +62,35 @@ class App extends Component {
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
   }
 
+  toggleAll = () => {
+    const messages = this.state.data;
+    let newState
+    let someSelected = messages.some(message => message.selected === true)
+    let everySelected = messages.every(message => message.selected === true)
+
+      if (everySelected)  {
+          newState = messages.map(message => {
+            message.selected = false
+            return message
+          })
+      }
+      else if(!someSelected) {
+        console.log(someSelected)
+        newState = messages.map(message => {
+          message.selected = true
+          return message
+        })
+      }
+      else {
+        newState = messages.map(message => {
+          message.selected = true
+          return message
+        })
+      }
+       this.setState({data: newState})
+
+  }
+
   setSelectedMessagesToRead= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true , selected: false} : {...message} )})
 
@@ -62,7 +98,7 @@ class App extends Component {
   }
 
   setSelectedMessagesToUnread= () => {
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
 
     const selectedMessages = this.state.data.filter(message=> message.selected);
     const selectedIds = selectedMessages.map(message => message.id)
@@ -126,16 +162,20 @@ class App extends Component {
     this.setState({showForm: !this.state.showForm })
 
   }
+
   handleRemoveMessage= () => {
 
      const messages = this.state.data
-     const result = messages.filter(message => message.selected === false);
+      messages.filter(message => {
+       message.selected === false
 
-     this.setState({data: result})
+       return messages
+     })
+     console.log(messages)
+    // this.setState({data: result})
 
 
    }
-
 
   handleNewMessage = (e) => {
     e.preventDefault()
@@ -155,7 +195,8 @@ class App extends Component {
       const message = await response.json()
 
 
-      this.setState({ data: [...this.state.data, message] })
+      this.setState({ data: [...this.state.data, message ] })
+      this.toggleForm()
 
 
       // const person = await response.json()
@@ -192,6 +233,8 @@ class App extends Component {
            setSelectedMessagesToUnread={this.setSelectedMessagesToUnread}
            handleAddLabel={this.handleAddLabel}
            handleRemoveLabel={this.handleRemoveLabel}
+           handleRemoveMessage={this.handleRemoveMessage}
+           toggleAll={this.toggleAll}
            toggleForm={this.toggleForm}
         />
         {this.state.showForm ? <ComposeForm handleNewMessage={this.handleNewMessage}/> : null}
