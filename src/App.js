@@ -76,20 +76,20 @@ class App extends Component {
     let newLabel = event.target.value
     const messages = this.state.data;
 
-    messages.map(message => {
+    const newMessages = messages.map(message => {
       if (message.selected) {
         var newLabelInLabels = message.labels.find(function(label) {
           return label === newLabel
         })
 
         if(!newLabelInLabels){
-          message.labels.push(newLabel)
+          message.labels = [...message.labels, newLabel]
         }
         message.selected = false
-
       }
+      return message
     })
-    this.setState({ data: messages })
+    this.setState({ data: newMessages })
   }
   handleRemoveLabel= (event) => {
     let selectedLabel = event.target.value
