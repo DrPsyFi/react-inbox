@@ -14,19 +14,22 @@ class App extends Component {
       showForm: false
     }
 
-    // data.map(message => {
-    //   if (message.selected) {
-    //
-    //   }
-    //   else {
-    //     message.selected = false;
-    //   }
-    // })
   }
   async componentDidMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
-    this.setState({data: json})
+
+    const newJson = json.map(message => {
+      if (message.selected) {
+        return message
+      }
+      else {
+        message.selected = false;
+        return message
+     }
+   })
+
+    this.setState({data: newJson})
 
   }
 
@@ -75,7 +78,7 @@ class App extends Component {
           })
       }
       else if(!someSelected) {
-        console.log(someSelected)
+
         newState = messages.map(message => {
           message.selected = true
           return message
@@ -166,16 +169,12 @@ class App extends Component {
   handleRemoveMessage= () => {
 
      const messages = this.state.data
-      messages.filter(message => {
-       message.selected === false
 
-       return messages
-     })
-     console.log(messages)
-    // this.setState({data: result})
+      const result = messages.filter(message => message.selected === false)
+      this.setState({data: result})
 
 
-   }
+ }
 
   handleNewMessage = (e) => {
     e.preventDefault()
@@ -193,15 +192,8 @@ class App extends Component {
         }
       })
       const message = await response.json()
-
-
       this.setState({ data: [...this.state.data, message ] })
       this.toggleForm()
-
-
-      // const person = await response.json()
-      //     this.setState({people: [...this.state.people, person]})
-
    }
 
    createMessage()
