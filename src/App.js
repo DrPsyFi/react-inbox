@@ -20,8 +20,7 @@ class App extends Component {
   }
 
 =======
-
->>>>>>> need to fix post method
+>>>>>>> f7674170786ae369e33db4dc3fdefe31fe91330d
   toggleStar = (id) => {
 
     const newStarValue = !(this.state.data.find(message => message.id === id).starred)
