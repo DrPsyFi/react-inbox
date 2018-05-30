@@ -21,26 +21,62 @@ class App extends Component {
       data
     }
   }
+
   toggleStar = (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, starred : !message.starred} : {...message})  })
+
   }
   toggleCheck= (id) => {
 
     this.setState({ data: this.state.data.map(message => message.id === id ? {...message, selected : !message.selected} : {...message})  })
-    console.log(this.state.data);
+
   }
+
+
+  toggleAll = () => {
+    const messages = this.state.data;
+    let newState
+    let someSelected = messages.some(message => message.selected === true)
+    let everySelected = messages.every(message => message.selected === true)
+
+      if (everySelected)  {
+          newState = messages.map(message => {
+            message.selected = false
+            return message
+          })
+      }
+      else if(!someSelected) {
+        console.log(someSelected)
+        newState = messages.map(message => {
+          message.selected = true
+          return message
+        })
+      }
+      else {
+        newState = messages.map(message => {
+          message.selected = true
+          return message
+        })
+      }
+       this.setState({data: newState})
+
+  }
+
   setSelectedMessagesToRead= () => {
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true} : {...message} )})
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true , selected: false} : {...message} )})
+
+
   }
   setSelectedMessagesToUnread= () => {
-    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false} : {...message} )})
+    this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
+
   }
   handleAddLabel= (event) => {
     let newLabel = event.target.value
     const messages = this.state.data;
 
-    messages.forEach(message => {
+    messages.map(message => {
       if (message.selected) {
         var newLabelInLabels = message.labels.find(function(label) {
           return label === newLabel
@@ -49,20 +85,22 @@ class App extends Component {
         if(!newLabelInLabels){
           message.labels.push(newLabel)
         }
+        message.selected = false
+
       }
     })
-    this.setState({ data: messages });
+    this.setState({ data: messages })
   }
   handleRemoveLabel= (event) => {
     let selectedLabel = event.target.value
     const messages = this.state.data
 
-    messages.forEach(message => {
+    messages.map(message => {
       if(message.selected){
         // remove selectedLabel from message.labels
         let result = message.labels.filter(label => label !== selectedLabel)
-        console.log(result)
         message.labels = result
+        message.selected = false
       }
       this.setState({ data: messages });
   })
@@ -73,7 +111,6 @@ class App extends Component {
     const result = messages.filter(message => message.selected === false);
 
     this.setState({data: result})
-
 
   }
 
@@ -101,6 +138,7 @@ class App extends Component {
            handleAddLabel={this.handleAddLabel}
            handleRemoveLabel={this.handleRemoveLabel}
            handleRemoveMessage={this.handleRemoveMessage}
+           toggleAll={this.toggleAll}
         />
         <Messages messages={this.state.data}
            toggleStar={this.toggleStar}
