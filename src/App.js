@@ -15,7 +15,7 @@ class App extends Component {
     }
 
   }
-  async componentDidMount() {
+  async componentWillMount() {
     const response = await fetch('http://localhost:8082/api/messages')
     const json = await response.json()
 
@@ -97,15 +97,35 @@ class App extends Component {
   setSelectedMessagesToRead= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: true , selected: false} : {...message} )})
 
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
 
+
+    const update2Read = async () =>  {
+      await fetch('http://localhost:8082/api/messages', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          messageIds: selectedIds,
+          command: "read",
+          read: true
+
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+    }
+    update2Read()
   }
+
 
   setSelectedMessagesToUnread= () => {
     this.setState({ data: this.state.data.map(message => message.selected ? {...message, read: false , selected: false} : {...message} )})
 
     const selectedMessages = this.state.data.filter(message=> message.selected);
     const selectedIds = selectedMessages.map(message => message.id)
-    console.log(selectedIds)
+
 
     const update2Unread = async () =>  {
       await fetch('http://localhost:8082/api/messages', {
@@ -129,9 +149,14 @@ class App extends Component {
     let newLabel = event.target.value
     const messages = this.state.data;
 
-    messages.map(message => {
+
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
+
+
+    const newMessages = messages.map(message => {
       if (message.selected) {
-        var newLabelInLabels = message.labels.find(function(label) {
+        let newLabelInLabels= message.labels.find(function(label) {
           return label === newLabel
         })
 
@@ -139,25 +164,72 @@ class App extends Component {
           message.labels.push(newLabel)
         }
         message.selected = false
-
       }
+      return message
     })
-    this.setState({ data: messages })
+
+
+    const updateLabel = async () =>  {
+        await fetch('http://localhost:8082/api/messages', {
+          method: 'PATCH',
+          body: JSON.stringify({
+            messageIds: selectedIds,
+            command: "addLabel",
+            label: newLabel
+
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+        })
+    }
+
+    updateLabel()
+    this.setState({data: newMessages})
   }
+
+
+
 
   handleRemoveLabel = (event) => {
     let selectedLabel = event.target.value
     const messages = this.state.data
 
-    messages.map(message => {
-      if(message.selected){
-        // remove selectedLabel from message.labels
-        let result = message.labels.filter(label => label !== selectedLabel)
-        message.labels = result
-        message.selected = false
-      }
-    this.setState({ data: messages });
-  })
+
+    const selectedMessages = this.state.data.filter(message=> message.selected);
+    const selectedIds = selectedMessages.map(message => message.id)
+
+
+    const newMessages = messages.map(message => {
+        if(message.selected){
+          // remove selectedLabel from message.labels
+          let result = message.labels.filter(label => label !== selectedLabel)
+          message.labels = result
+          message.selected = false
+        }
+        return message
+    })
+
+    const updateLabel = async () =>  {
+        await fetch('http://localhost:8082/api/messages', {
+          method: 'PATCH',
+          body: JSON.stringify({
+            messageIds: selectedIds,
+            command: "removeLabel",
+            label: selectedLabel
+
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+        })
+    }
+
+    updateLabel()
+    this.setState({data: newMessages})
+
   }
 
   toggleForm = () => {
@@ -172,7 +244,6 @@ class App extends Component {
 
       const result = messages.filter(message => message.selected === false)
       this.setState({data: result})
-
 
  }
 
@@ -195,7 +266,6 @@ class App extends Component {
       this.setState({ data: [...this.state.data, message ] })
       this.toggleForm()
    }
-
    createMessage()
  }
 
@@ -203,6 +273,7 @@ class App extends Component {
 
     let unReadCount = 0;
     let data = this.state.data
+
      for(let i = 0; i < data.length; i++) {
        if(!data[i].read) {
          unReadCount+= 1
@@ -238,7 +309,8 @@ class App extends Component {
       </div>
     </div>)
   }
+  }
 
-}
+
 
 export default App;
