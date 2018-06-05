@@ -240,12 +240,42 @@ class App extends Component {
 
   handleRemoveMessage= () => {
 
-     const messages = this.state.data
+      const messages = this.state.data
+      const selectedMessages = this.state.data.filter(message=> message.selected);
+      const selectedIds = selectedMessages.map(message => message.id)
 
       const result = messages.filter(message => message.selected === false)
+      console.log('selectedMessages', selectedMessages , "result", result, 'selectedIds', selectedIds );
+
+
+
+      const deleteMessages = async () =>  {
+          await fetch('http://localhost:8082/api/messages', {
+            method: 'PATCH',
+            body: JSON.stringify({
+              messageIds: selectedIds,
+              command: "delete",
+
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            }
+          })
+      }
+      deleteMessages()
       this.setState({data: result})
 
- }
+    }
+
+
+
+
+
+
+
+
+
 
   handleNewMessage = (e) => {
     e.preventDefault()
