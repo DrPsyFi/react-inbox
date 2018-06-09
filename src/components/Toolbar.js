@@ -8,7 +8,6 @@ import React from "react"
 const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelectedMessagesToUnread, unReadCount,
   handleAddLabel, handleRemoveLabel, handleRemoveMessage, toggleAll}) => {
   let checkClass
-
     if (allChecked) {
       checkClass= "fa-check-square-o"
     }
@@ -18,14 +17,21 @@ const Toolbar = ({allChecked, noneChecked, setSelectedMessagesToRead,setSelected
     else {
       checkClass= "fa-minus-square-o"
     }
+  let messageValue // 'unread message' or 'unread messages'
 
+    if(unReadCount === 1) {
+      messageValue = `unread message`
+    }
+    else {
+      messageValue = `unread messages`
+    }
 
     return (
     <div className="row toolbar">
       <div className="col-md-12">
         <p className="pull-right">
           <span className="badge badge">{unReadCount}</span>
-          unread messages
+          {messageValue}
         </p>
 
         <button className="btn btn-default">
